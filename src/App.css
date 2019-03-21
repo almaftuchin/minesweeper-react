@@ -13,22 +13,71 @@ body {
   text-align: center;
   cursor: pointer;
   border-radius: 5px;
-  color: #000000;
   font-weight: bold;
+  font-size: 28px
 }
 
-.is-flag {
-  color: red;
+.one {
+  color: #0F47AF
+}
+
+.two {
+  color: #068930
+}
+
+.three {
+  color: #FCDD07
+}
+
+.four {
+  color: #DA1219
+}
+
+.five,
+.six,
+.seven,
+.eight {
+  color: purple
 }
 
 .revealed {
   background: rgb(255, 123, 0);
 }
 
+.boom {
+  background: #DA1219
+}
+
 .game {
   max-width: 416px;
   margin: 0 auto;
   padding: 20px;
+}
+
+@media (min-width: 381px) and (max-width: 481px) {
+  .cell {
+    line-height: 40px;
+    height: 40px;
+    width: 40px;
+    font-size: 25px;
+  }
+
+  .game {
+    max-width: 336px;
+  }
+}
+
+@media only screen and (max-width: 380px) {
+  .cell {
+    line-height: 32px;
+    height: 32px;
+    width: 32px;
+    font-size: 20px;
+  }
+
+  .game {
+    max-width: 272px;
+  }
 }
 
 .App {
@@ -45,7 +94,7 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: 50px;
+  font-size: 45px;
   margin-bottom: 20px;
   color: #FEBD16;
 }
