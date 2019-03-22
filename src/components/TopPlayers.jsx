@@ -30,7 +30,7 @@ export class TopPlayers extends Component {
             <td>{index + 1}</td>
             <td>{data.name}</td>
             <td>{data.score}</td>
-            <td>{moment(data.time).format('MMM Do YY')}</td>
+            <td>{moment(data.time).format('MMM Do YY, h:mm:ss a')}</td>
           </tr>
         );
       });

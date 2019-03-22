@@ -12,6 +12,7 @@ export class Board extends Component {
   constructor(props) {
     super(props);
     this.progress = 0;
+    this.flags = 0;
     this.height = props.height;
     this.width = props.width;
     this.mines = props.mines;
@@ -35,6 +36,7 @@ export class Board extends Component {
 
   newGame = () => {
     this.progress = 0;
+    this.flags = 0;
     this.setState({
       board: this.initBoard(),
       status: 'Good luck!',
@@ -149,17 +151,22 @@ export class Board extends Component {
     }
   };
 
-  reveal = (index, { mine, revealed, flagged, val }) => {
-    if (revealed || flagged) return;
+  reveal = (index, { mine, revealed, flagged, val }, floodFill) => {
+    if (revealed || (flagged && !floodFill)) return;
     if (mine) {
       // Kaboom T_T
       return this.boom(index);
     }
     if (val === 0) {
+      if (flagged) this.flags--;
       this.floodFill(index);
     } else {
       let copy = [...this.state.board];
       copy[index].revealed = 1;
+      if (flagged) {
+        this.flags--;
+        copy[index].flagged = 0;
+      }
       // Check if win
       if (++this.progress === this.size - this.mines) {
         copy.forEach(cell => {
@@ -205,24 +212,27 @@ export class Board extends Component {
     if (i >= w) {
       // top left
       if (i - w - 1 >= 0 && (i - w - 1) % w !== w - 1)
-        this.reveal(i - w - 1, board[i - w - 1]);
+        this.reveal(i - w - 1, board[i - w - 1], true);
       // top
-      this.reveal(i - w, board[i - w]);
+      this.reveal(i - w, board[i - w], true);
       // top right
-      if ((i - w + 1) % w !== 0) this.reveal(i - w + 1, board[i - w + 1]);
+      if ((i - w + 1) % w !== 0) this.reveal(i - w + 1, board[i - w + 1], true);
     }
     if (i < size - w) {
       // btm left
-      if ((i + w - 1) % w !== w - 1) this.reveal(i + w - 1, board[i + w - 1]);
+      if ((i + w - 1) % w !== w - 1)
+        this.reveal(i + w - 1, board[i + w - 1], true);
       // btm
-      this.reveal(i + w, board[i + w]);
+      this.reveal(i + w, board[i + w], true);
       // btm right
-      if ((i + w + 1) % w !== 0) this.reveal(i + w + 1, board[i + w + 1]);
+      if ((i + w + 1) % w !== 0) this.reveal(i + w + 1, board[i + w + 1], true);
     }
     // left
-    if (i - 1 >= 0 && (i - 1) % w !== w - 1) this.reveal(i - 1, board[i - 1]);
+    if (i - 1 >= 0 && (i - 1) % w !== w - 1)
+      this.reveal(i - 1, board[i - 1], true);
     // right
-    if (i + 1 < size && (i + 1) % w !== 0) this.reveal(i + 1, board[i + 1]);
+    if (i + 1 < size && (i + 1) % w !== 0)
+      this.reveal(i + 1, board[i + 1], true);
   };
 
   rightClick = (index, props, e) => {
@@ -230,9 +240,12 @@ export class Board extends Component {
     // If first click then reveal instead of flagging.
     if (!this.state.started) return this.handleClick(index, props, e);
     // Only flag-able if not revealed.
-    if (this.state.board[index].revealed) return;
+    if (props.revealed) return;
+    if (!props.flagged && this.flags === 10)
+      return NotificationManager.info('You only had 10 flags', 'Uh oh!', 3000);
     let copy = [...this.state.board];
     copy[index].flagged = !copy[index].flagged;
+    this.flags += copy[index].flagged ? 1 : -1;
     this.setState({
       board: copy
     });
@@ -257,6 +270,10 @@ export class Board extends Component {
     let copy = [...this.state.board];
     this.state.minesLoc.forEach(mine => {
       copy[mine].revealed = 1;
+      if (copy[mine].flagged) {
+        copy[mine].flagged = 0;
+        this.flags--;
+      }
     });
     this.setState({
       board: copy,
