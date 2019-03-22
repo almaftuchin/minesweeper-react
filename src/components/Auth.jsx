@@ -30,14 +30,9 @@ export class Auth extends Component {
       localStorage.id = res.id;
       localStorage.accessToken = res.accessToken;
       localStorage.logged = 1;
-      this.setState(
-        {
-          logged: 1
-        },
-        () => {
-          //window.location.reload();
-        }
-      );
+      this.setState({
+        logged: 1
+      });
     }
   };
 
