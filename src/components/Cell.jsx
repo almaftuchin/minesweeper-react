@@ -24,6 +24,7 @@ export class Cell extends Component {
       'cell' +
       (cell.revealed ? ' revealed' : '') +
       (cell.revealed && cell.val ? numClasses[cell.val - 1] : '') +
+      (cell.flagged ? ' flagged' : '') +
       (cell.boom ? ' boom' : '');
     return (
       <div

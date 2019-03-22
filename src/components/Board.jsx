@@ -1,5 +1,12 @@
 import React, { Component } from 'react';
 import Cell from './Cell.jsx';
+import Timer from './Timer.jsx';
+import { Button, Row, Col } from 'react-bootstrap';
+import {
+  NotificationContainer,
+  NotificationManager
+} from 'react-notifications';
+import 'react-notifications/lib/notifications.css';
 
 export class Board extends Component {
   constructor(props) {
@@ -12,7 +19,11 @@ export class Board extends Component {
     this.state = {
       board: this.initBoard(),
       status: 'Good luck!',
-      started: 0
+      started: 0,
+      time: '00:00',
+      minesLoc: [],
+      godMode: 0,
+      logged: localStorage.logged
     };
   }
 
@@ -27,7 +38,9 @@ export class Board extends Component {
     this.setState({
       board: this.initBoard(),
       status: 'Good luck!',
-      started: 0
+      started: 0,
+      godMode: 0,
+      time: '00:00'
     });
   };
 
@@ -58,6 +71,7 @@ export class Board extends Component {
         i++;
       }
     }
+    this.setState({ minesLoc: j });
     return [board, j];
   };
 
@@ -114,12 +128,13 @@ export class Board extends Component {
     });
     this.setState({
       board: copy,
-      status: '😢 You lost 😢'
+      status: '😢 You lost 😢',
+      started: 0
     });
   };
 
   handleClick = (index, props) => {
-    if (!this.state.started) {
+    if (!this.state.started && !props.revealed) {
       this.setState(
         {
           started: 1,
@@ -144,21 +159,36 @@ export class Board extends Component {
       this.floodFill(index);
     } else {
       let copy = [...this.state.board];
-      this.progress++;
       copy[index].revealed = 1;
       // Check if win
-      if (this.progress === this.size - this.mines) {
+      if (++this.progress === this.size - this.mines) {
         copy.forEach(cell => {
           cell.revealed = 1;
         });
-        return this.setState({
-          board: copy,
-          status: '🎉 YOU WON 🎉'
-        });
+        return this.setState(
+          {
+            board: copy,
+            status: '🎉 YOU WON 🎉',
+            started: 0
+          },
+          () => this.sendData()
+        );
       }
       this.setState({
         board: copy
       });
+    }
+  };
+
+  sendData = () => {
+    // Cheating should not be added to top :D
+    if (this.state.logged && !this.state.godMode) {
+      fetch(
+        `https://cryptic-harbor-11039.herokuapp.com/score?id=${
+          localStorage.id
+        }&name=${localStorage.name}&score=${this.state.time}&time=${new Date() *
+          1}&access_token=${localStorage.accessToken}`
+      );
     }
   };
 
@@ -208,6 +238,32 @@ export class Board extends Component {
     });
   };
 
+  clockIn = () => {
+    let time = this.state.time.split(':');
+    let m = Number(time[0]);
+    let s = Number(time[1]) + 1;
+    s %= 60;
+    m += s === 0 ? 1 : 0;
+    s = s < 10 ? '0' + s : s;
+    m = m < 10 ? '0' + m : m;
+    this.setState({
+      time: m + ':' + s
+    });
+  };
+
+  cheat = () => {
+    if (!this.state.started)
+      return NotificationManager.info('Start the game first!', 'Uh oh!', 3000);
+    let copy = [...this.state.board];
+    this.state.minesLoc.forEach(mine => {
+      copy[mine].revealed = 1;
+    });
+    this.setState({
+      board: copy,
+      godMode: 1
+    });
+  };
+
   renderBoard = () => {
     return this.state.board.map((props, index) => {
       return (
@@ -222,19 +278,38 @@ export class Board extends Component {
   };
 
   render() {
+    const beautiful = { color: '#febd16' };
     return (
-      <div>
-        <div className='game-header'>
-          {this.state.status}
-          <br />
-          <br />
-          <button className='btn btn-success' onClick={this.newGame}>
-            New Game
-          </button>
-          <br />
-        </div>
-        {this.renderBoard()}
-      </div>
+      <>
+        <NotificationContainer />
+        <Row className='text-center'>
+          <Col md={12}>
+            <h1 style={beautiful}>{this.state.status}</h1>
+          </Col>
+          <Col md={12}>
+            <Button variant='primary' onClick={this.newGame}>
+              New Game
+            </Button>{' '}
+            <Button
+              variant='danger'
+              onClick={this.cheat}
+              disabled={this.state.godMode}
+            >
+              {'Defuse Mines 👀'}
+            </Button>
+          </Col>
+          <Col md={12}>
+            <Timer
+              started={this.state.started}
+              time={this.state.time}
+              clockIn={this.clockIn}
+            />
+          </Col>
+          <Col md={12} className='game'>
+            {this.renderBoard()}
+          </Col>
+        </Row>
+      </>
     );
   }
 }
