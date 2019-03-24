@@ -11,11 +11,9 @@ class App extends Component {
       <>
         <NavBar />
         <Container style={{ height: '100vh' }}>
-          <Row className='h-100 align-items-center'>
+          <Row className='h-100 align-items-center text-center'>
             <Col md={12}>
-              <Board height={8} width={8} mines={10} />
-            </Col>
-            <Col md={12}>
+              <Board height={8} width={8} mines={10} level={'Easy'} />
               <TopPlayers />
             </Col>
           </Row>

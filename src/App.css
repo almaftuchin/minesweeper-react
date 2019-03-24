@@ -17,9 +17,6 @@ body {
   background: #febd16;
   border: 1px solid #000000;
   float: left;
-  line-height: 50px;
-  height: 50px;
-  width: 50px;
   text-align: center;
   cursor: pointer;
   border-radius: 5px;
@@ -63,32 +60,110 @@ body {
 }
 
 .game {
-  max-width: 430px;
+  display: grid;
   margin: 0 auto;
 }
 
-@media (min-width: 381px) and (max-width: 481px) {
-  .cell {
+.Easy {
+  grid-template-columns: auto auto auto auto auto auto auto auto;
+  max-width: 430px;
+}
+
+.Hard {
+  grid-template-columns: auto auto auto auto auto auto auto auto auto auto;
+  max-width: 530px;
+}
+
+.Expert {
+  grid-template-columns: auto auto auto auto auto auto auto auto auto auto auto auto;
+  max-width: 630px;
+}
+
+.Easy .cell,
+.Hard .cell,
+.Expert .cell {
+  line-height: 50px;
+  height: 50px;
+  width: 50px;
+}
+
+@media (min-width: 482px) and (max-width: 765px) {
+  .Expert .cell {
     line-height: 40px;
     height: 40px;
     width: 40px;
     font-size: 25px;
   }
 
-  .game {
-    max-width: 350px;
+  .Expert {
+    width: 500px
   }
 }
 
-@media only screen and (max-width: 380px) {
-  .cell {
+@media (min-width: 381px) and (max-width: 481px) {
+
+  .Easy .cell {
+    line-height: 40px;
+    height: 40px;
+    width: 40px;
+    font-size: 25px;
+  }
+
+  .Hard .cell {
+    line-height: 35px;
+    height: 35px;
+    width: 35px;
+    font-size: 25px;
+  }
+
+  .Expert .cell {
     line-height: 32px;
     height: 32px;
     width: 32px;
     font-size: 20px;
   }
 
-  .game {
-    max-width: 290px;
+  .Easy {
+    width: 350px
   }
+
+  .Hard {
+    width: 380px
+  }
+
+  .Expert {
+    width: 400px
+  }
+
+}
+
+@media only screen and (max-width: 380px) {
+
+  .Easy .cell,
+  .Hard .cell {
+    line-height: 32px;
+    height: 32px;
+    width: 32px;
+    font-size: 20px;
+  }
+
+  .Expert .cell {
+    line-height: 28px;
+    height: 28px;
+    width: 28px;
+    font-size: 18px;
+  }
+
+  .Easy {
+    width: 285px
+  }
+
+  .Hard {
+    width: 340px
+  }
+
+  .Expert {
+    width: 365px;
+  }
+
 }

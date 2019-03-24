@@ -8,11 +8,18 @@ import {
 } from 'react-notifications';
 import 'react-notifications/lib/notifications.css';
 
+const levels = [
+  { level: 'Easy', height: 8, width: 8, mines: 10 },
+  { level: 'Hard', height: 10, width: 10, mines: 20 },
+  { level: 'Expert', height: 12, width: 12, mines: 30 }
+];
+
 export class Board extends Component {
   constructor(props) {
     super(props);
     this.progress = 0;
     this.flags = 0;
+    this.level = 0;
     this.height = props.height;
     this.width = props.width;
     this.mines = props.mines;
@@ -24,7 +31,8 @@ export class Board extends Component {
       time: '00:00',
       minesLoc: [],
       godMode: 0,
-      logged: localStorage.logged
+      logged: localStorage.logged,
+      level: props.level
     };
   }
 
@@ -194,7 +202,7 @@ export class Board extends Component {
         `https://cryptic-harbor-11039.herokuapp.com/score?id=${
           localStorage.id
         }&name=${localStorage.name}&score=${this.state.time}&time=${new Date() *
-          1}&access_token=${localStorage.accessToken}`
+          1}&level=${this.state.level}&access_token=${localStorage.accessToken}`
       );
     }
   };
@@ -281,6 +289,25 @@ export class Board extends Component {
     });
   };
 
+  changeLevel = () => {
+    this.level = ++this.level % 3;
+    this.height = levels[this.level].height;
+    this.width = levels[this.level].width;
+    this.mines = levels[this.level].mines;
+    this.size = this.height * this.width;
+    this.progress = 0;
+    this.flags = 0;
+    this.setState({
+      board: this.initBoard(),
+      status: 'Good luck!',
+      started: 0,
+      time: '00:00',
+      minesLoc: [],
+      godMode: 0,
+      level: levels[this.level].level
+    });
+  };
+
   renderBoard = () => {
     return this.state.board.map((props, index) => {
       return (
@@ -299,7 +326,7 @@ export class Board extends Component {
     return (
       <>
         <NotificationContainer />
-        <Row className='text-center'>
+        <Row>
           <Col md={12}>
             <h1 style={beautiful}>{this.state.status}</h1>
           </Col>
@@ -308,11 +335,14 @@ export class Board extends Component {
               New Game
             </Button>{' '}
             <Button
-              variant='danger'
+              variant='info'
               onClick={this.cheat}
               disabled={this.state.godMode}
             >
               {'Defuse Mines 👀'}
+            </Button>{' '}
+            <Button variant='danger' onClick={this.changeLevel}>
+              {this.state.level}
             </Button>
           </Col>
           <Col md={12}>
@@ -322,7 +352,7 @@ export class Board extends Component {
               clockIn={this.clockIn}
             />
           </Col>
-          <Col md={12} className='game'>
+          <Col md={12} className={'game ' + this.state.level}>
             {this.renderBoard()}
           </Col>
         </Row>
