@@ -34,7 +34,3 @@ Using Heroku.
 | React-facebook-login | https://www.npmjs.com/package/react-facebook-login |
 | react-notifications  | https://www.npmjs.com/package/react-notifications  |
 | gh-pages             | https://www.npmjs.com/package/gh-pages             |
-
-### Todos
-
-- Level/Difficulty

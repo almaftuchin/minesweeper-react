@@ -67,8 +67,8 @@ export class TopPlayers extends Component {
                   <th>#</th>
                   <th>Name</th>
                   <th>Score</th>
-                  <th>Time</th>
                   <th>Level</th>
+                  <th>Time</th>
                 </tr>
               </thead>
               <tbody>{top5}</tbody>
