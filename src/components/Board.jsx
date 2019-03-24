@@ -10,8 +10,8 @@ import 'react-notifications/lib/notifications.css';
 
 const levels = [
   { level: 'Easy', height: 8, width: 8, mines: 10 },
-  { level: 'Hard', height: 10, width: 10, mines: 20 },
-  { level: 'Expert', height: 12, width: 12, mines: 30 }
+  { level: 'Hard', height: 10, width: 10, mines: 25 },
+  { level: 'Expert', height: 12, width: 12, mines: 40 }
 ];
 
 export class Board extends Component {
@@ -249,8 +249,12 @@ export class Board extends Component {
     if (!this.state.started) return this.handleClick(index, props, e);
     // Only flag-able if not revealed.
     if (props.revealed) return;
-    if (!props.flagged && this.flags === 10)
-      return NotificationManager.info('You only had 10 flags', 'Uh oh!', 3000);
+    if (!props.flagged && this.flags === this.mines)
+      return NotificationManager.info(
+        `You only had ${this.mines} flags`,
+        'Uh oh!',
+        3000
+      );
     let copy = [...this.state.board];
     copy[index].flagged = !copy[index].flagged;
     this.flags += copy[index].flagged ? 1 : -1;

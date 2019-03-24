@@ -2,6 +2,12 @@
 
 ### [Rules of MineSweeper](https://gist.github.com/lionel-lints/1b520163e892bf7913f594bd76363ff8)
 
+### Levels
+
+- Easy: 8x8 board with 10 mines.
+- Hard: 10x10 board with 25 mines.
+- Expert: 12x12 board with 40 mines
+
 ### Leaderboards
 
 - Using Cheat - Defuse Mine 👀 will not count.
@@ -14,7 +20,7 @@ Easy win but meh
 ### Using Flags
 
 - Using Flags is a good stragety to mark the mines, however you can be wrong sometimes
-- You have 10 flags to place.
+- You have certain amount of flags to place.
 - Upon clicking on a 0 cell that expands the cells nearby, if your flags are placed within those cells, the game will refund those flags to you.
 - Defusing Mines will also refund your flags, but you probably won't even need the flags anymore.
 
